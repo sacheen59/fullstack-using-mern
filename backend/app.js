@@ -1,15 +1,15 @@
+require("dotenv").config();
 const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const multer = require("multer");
 
-
-require("dotenv").config();
-
+//importing the routes
 const feedRoutes = require("./routes/feed");
 const authRoutes = require("./routes/auth");
 
+// making app
 const app = express();
 
 // control file storage
@@ -35,6 +35,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
+// configuring different middleware
 app.use(bodyParser.json());
 app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
@@ -49,6 +50,7 @@ app.use((req, res, next) => {
   next();
 });
 
+// defining the routes
 app.use("/feed", feedRoutes);
 app.use("/auth", authRoutes);
 
@@ -64,6 +66,7 @@ app.use((error, req, res, next) => {
   });
 });
 
+// connecting mongoose and starting app
 mongoose
   .connect(process.env.MONGODB_URL)
   .then((result) => {
